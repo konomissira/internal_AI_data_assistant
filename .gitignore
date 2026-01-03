@@ -27,6 +27,9 @@ venv/
 .env.*
 config/*.env
 
+docker/.env
+
+
 # Reports
 evaluation/reports/*
 !evaluation/reports/.gitkeep
