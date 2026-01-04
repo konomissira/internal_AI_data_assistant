@@ -1,43 +1,76 @@
 # Internal AI Data Assistant Platform (MCP-Governed)
 
-A **governed internal data platform** that enables business users to ask questions in natural language and receive trusted answers via **AI-generated SQL**, using **MCP (Model Context Protocol) as the interface layer**.
-The system enforces **guardrails**, and provides **logging, evaluation, and observability** to support production-style deployment.
+A **production-minded internal AI data platform** that enables business users to ask questions in natural language and receive **trusted, governed answers** via AI-generated SQL.
+
+The platform uses **MCP (Model Context Protocol)** as the interface layer and enforces:
+
+-   governance
+-   safety
+-   observability
+-   evaluation
+
+This is **not a GenAI demo**.  
+It is a realistic internal data platform designed for enterprise environments.
 
 ---
 
 ## Why this project
 
-GenAI demos are easy to build. Production systems are not.
+GenAI demos are easy to build. **Production systems are not**.
 
-Most GenAI projects fail in real environments not because of the model, but because of weak data foundations, including:
+Most GenAI initiatives fail in real organisations not because of the model, but because of weak data foundations:
 
 -   unclear semantic definitions of metrics
 -   uncontrolled access to raw tables
 -   unsafe or incorrect SQL generation
--   lack of observability and evaluation
+-   no observability or evaluation
+-   no way to measure trust or regressions
 
-This project focuses on the **data engineering foundations** required to make AI assistants **reliable, auditable, and production-ready**.
+This project focuses on the **data engineering foundations** required to make AI assistants **reliable, auditable, and safe to deploy**.
 
 ---
 
-## Core capabilities (MVP)
+## What this platform demonstrates
 
--   **MCP Server** exposing governed tools for:
-    -   dataset and metric discovery (catalog)
-    -   semantic model access (joins, dimensions, constraints)
-    -   SQL generation and validation
-    -   safe query execution
-    -   telemetry and logging
--   **Semantic layer & governance**
-    -   approved metrics and dimensions
-    -   controlled joins and constraints
-    -   SQL policy enforcement
--   **Evaluation layer**
-    -   golden questions test suite
-    -   automated checks for validity and performance
--   **Minimal UI**
-    -   CLI or Streamlit interface for querying data
-    -   visibility into generated SQL, results, and evaluation status
+-   **MCP-governed tool interfaces** (catalog, SQL validation, execution)
+-   **Semantic layer–driven analytics** (metrics, dimensions, joins)
+-   **SQL safety and policy enforcement**
+-   **Full telemetry and observability**
+-   **Golden-questions evaluation suite**
+-   **End-to-end orchestration from question → answer**
+-   **Senior engineering discipline** (clear boundaries, testing, evaluation)
+
+---
+
+## Core capabilities
+
+### MCP Server
+
+-   Dataset and metric discovery
+-   Semantic model access
+-   SQL validation (SELECT-only, allowlisted tables, LIMIT enforcement)
+-   Safe query execution
+-   Telemetry logging
+
+### AI Orchestration Layer
+
+-   Question intent parsing (metric + dimensions)
+-   Governed SQL generation
+-   Validation → execution workflow
+-   Replaceable planner (rule-based now, LLM-ready later)
+
+### Evaluation Layer
+
+-   Golden questions test suite
+-   Pass/fail reporting
+-   Regression detection for intent parsing and safety
+
+### UI (Streamlit)
+
+-   Natural language question input
+-   Generated SQL visibility
+-   Result tables
+-   Business-friendly demo experience
 
 ---
 
@@ -47,24 +80,30 @@ This project focuses on the **data engineering foundations** required to make AI
 [ Business User ]
         |
         v
-[ UI / Client ]
+[ Streamlit UI ]
         |
         v
-[ AI Query Service ]
+[ AI Orchestrator ]
         |
         v
-[ MCP Server (tools + governance) ]
+[ MCP Server ]
+  |   |    |
+  |   |    +--> SQL validation
+  |   |
+  |   +--> Semantic catalog
+  |
+  +--> Safe query execution
         |
         v
 [ Analytics Database ]
         |
         v
-[ Logs + Evaluation ]
+[ Telemetry + Evaluation ]
 ```
 
 **Key principle:**  
 This is a **data platform first**.  
-AI is an interface, not the system.
+AI is an interface — not the system.
 
 ---
 
@@ -72,61 +111,76 @@ AI is an interface, not the system.
 
 ```
 .
-├── docker/                 # Local infrastructure (PostgreSQL, etc.)
+├── docker/                 # Container orchestration (Postgres, services)
 ├── db/
-│   └── init/               # Schema, seed data, semantic layer SQL
+│   └── init/               # Schema, seed data, semantic layer
 ├── mcp_server/             # MCP server (tools, governance, telemetry)
-│   ├── app/
-│   │   ├── tools/
-│   │   ├── governance/
-│   │   └── db/
-│   └── tests/
-├── ai_service/             # AI orchestration service (calls MCP tools)
-│   ├── app/
-│   │   └── prompts/
-│   └── tests/
-├── ui/                     # Minimal interface Streamlit
-├── evaluation/             # Golden questions + evaluation scripts
+├── ai_service/             # AI orchestration logic
+├── ui/                     # Streamlit demo UI
+├── evaluation/             # Golden questions & evaluation runner
 │   └── reports/
 └── docs/                   # Architecture diagrams and demo scripts
 ```
 
 ---
 
-## Local setup (initial)
-
-### 1. Create and activate virtual environment
+## Quick start (local, non-docker)
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate   # macOS / Linux
-```
-
-### 2. Install dependencies
-
-```bash
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+Start services:
+
+```bash
+# Terminal 1
+docker compose up -d postgres
+
+# Terminal 2
+uvicorn mcp_server.app.main:app --reload --port 8000
+
+# Terminal 3
+python -m streamlit run ui/streamlit_app.py
+```
+
 ---
 
-## Roadmap (tracked via milestones)
+## Evaluation (Golden Questions)
 
--   [x] Repository bootstrap and documentation
--   [ ] Analytics database schema and seed data
--   [ ] MCP server skeleton and core tools
--   [ ] Semantic layer and SQL governance rules
--   [ ] Logging and evaluation framework
--   [ ] Minimal UI and demo workflow
+Run evaluation:
+
+```bash
+python -m evaluation.run_eval
+```
+
+Outputs:
+
+-   Console summary
+-   Detailed report: `evaluation/reports/latest.json`
 
 ---
 
-## Design goals
+## Design principles
 
--   **Governance over freedom**: AI queries operate only within approved boundaries
--   **Observability by default**: every query is logged and evaluated
--   **Production realism**: prioritise reliability over novelty
--   **Senior-level discipline**: clean architecture, clear contracts, versioned changes
+-   **Governance over freedom**
+-   **Observability by default**
+-   **Evaluation as a first-class concern**
+-   **Clear separation of responsibilities**
+-   **Production realism over novelty**
+
+---
+
+## Roadmap
+
+-   [x] Governed MCP server
+-   [x] Semantic analytics layer
+-   [x] SQL validation & safety
+-   [x] Telemetry & logging
+-   [x] Streamlit demo UI
+-   [x] Golden questions evaluation suite
+-   [ ] Full dockerised one-command demo
 
 ---
 
