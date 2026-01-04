@@ -49,14 +49,24 @@ def _normalize(q: str) -> str:
 def _pick_metric(question: str) -> str:
     q = _normalize(question)
 
-    # metric selection
-    if "order" in q and ("count" in q or "number" in q or "how many" in q):
-        return "total_orders"
+    # explicit intent: orders
+    if "order" in q:
+        # common phrasing: "total orders"
+        if "total order" in q or "total orders" in q:
+            return "total_orders"
+        # other phrasing: count/number/how many
+        if "count" in q or "number" in q or "how many" in q:
+            return "total_orders"
+
+    # average intent
     if "avg" in q or "average" in q:
         return "avg_order_value"
+
+    # quantity intent
     if "quantity" in q or "units" in q:
         return "total_quantity"
-    # default
+
+    # fallback
     return "total_sales"
 
 
