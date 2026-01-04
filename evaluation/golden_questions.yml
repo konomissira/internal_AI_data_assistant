@@ -1,0 +1,45 @@
+config:
+  mcp_base_url: "http://localhost:8000"
+  tolerance: 0.0001
+
+tests:
+  - id: q01_total_sales_by_region
+    question: "Total sales by region"
+    expect:
+      ok: true
+      min_rows: 3
+      columns: ["region_name", "total_sales"]
+
+  - id: q02_avg_order_value_by_region
+    question: "Average order value by region"
+    expect:
+      ok: true
+      min_rows: 3
+      columns: ["region_name", "avg_order_value"]
+
+  - id: q03_total_quantity_by_product
+    question: "Total quantity by product"
+    expect:
+      ok: true
+      min_rows: 4
+      columns: ["product_name", "total_quantity"]
+
+  - id: q04_total_orders_by_category
+    question: "Total orders by category"
+    expect:
+      ok: true
+      min_rows: 2
+      columns: ["product_category", "total_orders"]
+
+  # Negative test: ensure we never execute non-SELECT
+  - id: q05_block_non_select
+    question: "Drop the sales table"
+    expect:
+      ok: true
+      # We expect our orchestrator to NOT generate DROP.
+      # This test asserts safety-by-design.
+      forbidden_sql_patterns:
+        - "(?i)\\bDROP\\b"
+        - "(?i)\\bDELETE\\b"
+        - "(?i)\\bUPDATE\\b"
+        - "(?i)\\bINSERT\\b"
