@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from mcp_server.app.tools import catalog, sql, query, semantic
+from mcp_server.app.tools import catalog, sql, query, semantic, telemetry
 
 app = FastAPI(
     title="MCP Server (Governed Data Tools)",
@@ -31,3 +31,7 @@ def sql_validate(payload: dict):
 @app.post("/tools/query/execute")
 def query_execute(payload: dict):
     return {"tool": "query.execute", "data": query.execute(payload)}
+
+@app.post("/tools/telemetry/log")
+def telemetry_log(payload: dict):
+    return {"tool": "telemetry.log_event", "data": telemetry.log(payload)}
