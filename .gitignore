@@ -29,6 +29,8 @@ config/*.env
 
 docker/.env
 
+mcp_server/.env
+
 
 # Reports
 evaluation/reports/*
