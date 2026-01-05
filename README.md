@@ -124,6 +124,59 @@ AI is an interface — not the system.
 
 ---
 
+## Quick start (Docker — one command)
+
+The entire platform (Postgres, MCP server, Streamlit UI) can be started with Docker.
+
+### Prerequisites
+
+-   Docker Desktop
+-   Docker Compose (v2)
+
+### Setup
+
+Create a local environment file from the example:
+
+```bash
+cp docker/.env.example docker/.env
+```
+
+You may edit `docker/.env` if you want to change ports or credentials.
+
+### Run the full stack
+
+From the repository root:
+
+```bash
+docker compose --env-file docker/.env up --build
+```
+
+This will:
+
+-   start PostgreSQL and initialise the schema and seed data
+-   start the MCP server with governance and telemetry
+-   start the Streamlit UI
+
+### Access the UI
+
+Open your browser at:
+
+```
+http://localhost:8501
+```
+
+Try asking:
+
+> **“Total sales by region”**
+
+To stop and clean everything (including the database volume):
+
+```bash
+docker compose --env-file docker/.env down -v
+```
+
+---
+
 ## Quick start (local, non-docker)
 
 ```bash
@@ -180,7 +233,7 @@ Outputs:
 -   [x] Telemetry & logging
 -   [x] Streamlit demo UI
 -   [x] Golden questions evaluation suite
--   [ ] Full dockerised one-command demo
+-   [x] Full dockerised one-command demo
 
 ---
 
